@@ -1,17 +1,21 @@
+// Перевод в kebab-case. 
 export function pascalToKebab(value: string): string {
     return value.replace(/([a-z0–9])([A-Z])/g, "$1-$2").toLowerCase();
 }
 
+// Проверка является ли аргумент строкой-селектором.
 export function isSelector(x: any): x is string {
     return (typeof x === "string") && x.length > 1;
 }
 
+// Проверка является ли значение null/undefined.
 export function isEmpty(value: any): boolean {
     return value === null || value === undefined;
 }
 
 export type SelectorCollection<T> = string | NodeListOf<Element> | T[];
 
+// Функция для поиска списка DOM элементов в разметке.\
 export function ensureAllElements<T extends HTMLElement>(selectorElement: SelectorCollection<T>, context: HTMLElement = document as unknown as HTMLElement): T[] {
     if (isSelector(selectorElement)) {
         return Array.from(context.querySelectorAll(selectorElement)) as T[];
@@ -27,6 +31,7 @@ export function ensureAllElements<T extends HTMLElement>(selectorElement: Select
 
 export type SelectorElement<T> = T | string;
 
+// Функция для поиска DOM элемента в разметке.\
 export function ensureElement<T extends HTMLElement>(selectorElement: SelectorElement<T>, context?: HTMLElement): T {
     if (isSelector(selectorElement)) {
         const elements = ensureAllElements<T>(selectorElement, context);
@@ -59,6 +64,7 @@ export function bem(block: string, element?: string, modifier?: string): { name:
     };
 }
 
+// Утилита для получения списка свойств/методов прототипа объекта.
 export function getObjectProperties(obj: object, filter?: (name: string, prop: PropertyDescriptor) => boolean): string[] {
     return Object.entries(
         Object.getOwnPropertyDescriptors(
@@ -69,9 +75,7 @@ export function getObjectProperties(obj: object, filter?: (name: string, prop: P
         .map(([name, prop]) => name);
 }
 
-/**
- * Устанавливает dataset атрибуты элемента
- */
+//  Устанавка dataset атрибутов элемента
 export function setElementData<T extends Record<string, unknown> | object>(el: HTMLElement, data: T) {
     for (const key in data) {
         el.dataset[key] = String(data[key]);
@@ -90,22 +94,21 @@ export function getElementData<T extends Record<string, unknown>>(el: HTMLElemen
 }
 
 /**
- * Проверка на простой объект
- */
+ * Проверяет, является ли объект простым:
+  */
 export function isPlainObject(obj: unknown): obj is object {
     const prototype = Object.getPrototypeOf(obj);
     return  prototype === Object.getPrototypeOf({}) ||
         prototype === null;
 }
 
+// Type guard. Проверяет, является ли тип переданного значения булевым.
 export function isBoolean(v: unknown): v is boolean {
     return typeof v === 'boolean';
 }
 
 /**
  * Фабрика DOM-элементов в простейшей реализации
- * здесь не учтено много факторов
- * в интернет можно найти более полные реализации
  */
 export function createElement<
     T extends HTMLElement
