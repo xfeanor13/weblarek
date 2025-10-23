@@ -74,8 +74,9 @@ api.getProducts()
 	catalogData.setItems(products); 
 })
 .catch((error) => {
-	console.error(error);
+	console.error("Ошибка:", error.message);
 })
+
 
 // Создание элементов карточек
 events.on(AppEvents.CardsSaved, () => {
@@ -224,27 +225,31 @@ events.on<{phone: string}>(AppEvents.FormContactsInputPhone, (phone)=> {
 })
 
 // Слушатель сабмита формы контактов
-events.on(AppEvents.FormContactsSubmit, ()=> {
-	const userOrderData = userData.getUserData();
-	const totalPrice = basketData.getTotalPrice();
-	const basketItemsIds = basketData.getItems().map((item)=> { 
-		return item.id;
-	})
-	const fullOrderData = {
-		...userOrderData,
-		total: totalPrice,
-		items: basketItemsIds
-	}
-	api.createOrder(fullOrderData) 
-		.then((res) => {
-			basketData.clearBasket(); 
-			userData.clearData();
-			contactsFormView.resetForm();
-			orderFormView.resetForm();
-			orderFormView.clearButtonState();
-			modalView.render({content: succesMessageView.render({totalPrice: res.total})});
-	});
-})
+events.on(AppEvents.FormContactsSubmit, () => {
+    const userOrderData = userData.getUserData();
+    const totalPrice = basketData.getTotalPrice();
+    const basketItemsIds = basketData.getItems().map(item => item.id);
+    const fullOrderData = {
+        ...userOrderData,
+        total: totalPrice,
+        items: basketItemsIds
+    }; 
+        // Отправляем заказ через API
+        api.createOrder(fullOrderData)
+            .then(res => {
+                basketData.clearBasket();
+                userData.clearData();
+                contactsFormView.resetForm();
+                orderFormView.resetForm();
+                orderFormView.clearButtonState();
+                modalView.render({
+                    content: succesMessageView.render({ totalPrice: res.total })
+                });
+            })
+            .catch(error => {
+                console.error("Ошибка:", error.message); 
+            });
+});
 
 // Слушатель сабмита сообщения об успешном заказе
 events.on(AppEvents.OrderSuccessConfirm, ()=> { 
