@@ -19,10 +19,19 @@ export class BaseFormView extends Component<BaseFormProps> implements IBaseFormV
 		this.container = container;
 		this.inputsElement = container.querySelectorAll('.form__input');
 		this.errorsElement = container.querySelector('.form__errors');
-		this.submitButton = container.querySelector('button[name=form__errors]');
+		this.submitButton = container.querySelector('button[type = "submit"]');
 	}
 
 	resetForm() {
 		this.container.reset();
+	}
+
+	set submitButtonDisable(isValid: boolean) {
+		if(isValid) {
+			this.submitButton.disabled = false; 
+		}
+		else {
+			this.submitButton.disabled = true; 
+		}
 	}
 }

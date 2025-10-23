@@ -55,13 +55,6 @@ export class ContactsFormView extends BaseFormView implements IContactsFormView 
 		this.phoneInput.value = phone; 
 	}
 
-	set submitButtonDisable(isValid: boolean) {
-		if(isValid) {
-			this.submitButton.disabled = false; 
-		}
-		else {
-			this.submitButton.disabled = true; 
-		}
-	}
+	
 
 }
